@@ -45,3 +45,26 @@ Default always defined valueFiles to be included in Applications
 {{- end }} {{/* range $.Values.global.extraValueFiles */}}
 {{- end }} {{/* if $.Values.global.extraValueFiles */}}
 {{- end }} {{/* clustergroup.app.globalvalues.valuefiles */}}
+
+{{/*
+Default always defined valueFiles to be included in Applications but with a prefix called $gitref
+*/}}
+{{- define "clustergroup.app.globalvalues.prefixedvaluefiles" -}}
+- "$gitref/values-global.yaml"
+- "$gitref/values-{{ $.Values.clusterGroup.name }}.yaml"
+{{- if $.Values.global.clusterPlatform }}
+- "$gitref/values-{{ $.Values.global.clusterPlatform }}.yaml"
+  {{- if $.Values.global.clusterVersion }}
+- "$gitref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
+  {{- end }}
+- "$gitref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
+{{- end }}
+{{- if $.Values.global.clusterVersion }}
+- "$gitref/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
+{{- end }}
+{{- if $.Values.global.extraValueFiles }}
+{{- range $.Values.global.extraValueFiles }}
+- "$gitref/{{ . }}"
+{{- end }} {{/* range $.Values.global.extraValueFiles */}}
+{{- end }} {{/* if $.Values.global.extraValueFiles */}}
+{{- end }} {{/* clustergroup.app.globalvalues.prefixedvaluefiles */}}
