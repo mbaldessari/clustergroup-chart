@@ -50,7 +50,7 @@ Default always defined valueFiles to be included in Applications but with a pref
 {{- if $.Values.global.clusterPlatform }}
 - "$gitref/values-{{ $.Values.global.clusterPlatform }}.yaml"
   {{- if $.Values.global.clusterVersion }}
-- "$gitrev/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
+- "$gitref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
   {{- end }}
 - "$gitref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
 {{- end }}
