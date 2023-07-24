@@ -128,9 +128,9 @@ spec:
     namespace: {{ default $namespace .namespace }}
   project: {{ .project }}
   {{- /* Note: This here is the definition when multiSource support is enabled! */}}
-  {{- if default false $.Values.global.multiSourceSupport }}
+  {{- if $.Values.global.multiSourceSupport }}
   sources:
-    - repoURL: {{ coalesce .repoURL $.Values.global.multiSourceRepoChart }}
+    - repoURL: {{ coalesce .repoURL $.Values.global.multiSourceRepoUrl }}
       targetRevision: {{ coalesce .targetRevision $.Values.global.targetRevision }}
       {{- if .chart }}
       chart: {{ .chart }}
@@ -143,7 +143,7 @@ spec:
       helm:
         ignoreMissingValueFiles: true
         valueFiles:
-        {{- include "clustergroup.app.globalvalues.prefixedvaluefiles" $ | nindent 6 }}
+        {{- include "clustergroup.app.globalvalues.prefixedvaluefiles" $ | nindent 8 }}
         {{- range $valueFile := .extraValueFiles }}
         - {{ $valueFile | quote }}
         {{- end }}
