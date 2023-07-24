@@ -130,12 +130,14 @@ spec:
   {{- /* Note: This here is the definition when multiSource support is enabled! */}}
   {{- if $.Values.global.multiSourceSupport }}
   sources:
-    - repoURL: {{ coalesce .repoURL $.Values.global.multiSourceRepoUrl }}
-      targetRevision: {{ coalesce .targetRevision $.Values.global.targetRevision }}
-      {{- if .chart }}
+    - {{- if .chart }}
+      repoURL: {{ coalesce .repoURL $.Values.global.multiSourceRepoUrl }}
       chart: {{ .chart }}
+      targetRevision: {{ .targetRevision }}
       {{- else }}
+      repoURL: {{ coalesce .repoURL $.Values.global.repoURL }}
       path: {{ .path }}
+      targetRevision: {{ coalesce .targetRevision $.Values.global.targetRevision }}
       {{- end }}{{- /* if .chart */}}
       {{- if .plugin }}
       plugin: {{ .plugin | toPrettyJson }}
