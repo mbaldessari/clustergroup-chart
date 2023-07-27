@@ -120,6 +120,8 @@ kind: Application
 metadata:
   name: {{ .name }}
   namespace: {{ $namespace }}
+  labels:
+    yomama: foo
   finalizers:
   - resources-finalizer.argocd.argoproj.io/foreground
 spec:
