@@ -138,7 +138,7 @@ spec:
     - {{- if .chart }}
       repoURL: {{ coalesce .repoURL $.Values.global.multiSourceRepoUrl }}
       chart: {{ .chart }}
-      targetRevision: {{ .targetRevision }}
+      targetRevision: {{ .chartVersion }}
       {{- else }}
       repoURL: {{ coalesce .repoURL $.Values.global.repoURL }}
       path: {{ .path }}
