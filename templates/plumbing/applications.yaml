@@ -137,7 +137,7 @@ spec:
       ref: gitref
     - repoURL: {{ coalesce .repoURL $.Values.global.multiSourceRepoUrl }}
       chart: {{ .chart }}
-      targetRevision: {{ .targetRevision }}
+      targetRevision: {{ .chartVersion }}
       {{- if .plugin }}
       plugin: {{ .plugin | toPrettyJson }}
       {{- else }}
