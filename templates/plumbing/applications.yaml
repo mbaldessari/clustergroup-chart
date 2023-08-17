@@ -134,7 +134,7 @@ spec:
       {{- /* We do not allow overriding the values with .targetRevision because when we use .targetRevision in a chart to specify the helm
              chart, that revision (e.g. 0.0.1) won't exist in the git tree. So here we simply always take the pattern's git branch/commit */}}
       targetRevision: {{ $.Values.global.targetRevision }}
-      ref: gitref
+      ref: patternref
     - repoURL: {{ coalesce .repoURL $.Values.global.multiSourceRepoUrl }}
       chart: {{ .chart }}
       targetRevision: {{ .chartVersion }}

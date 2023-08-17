@@ -47,24 +47,24 @@ Default always defined valueFiles to be included in Applications
 {{- end }} {{/* clustergroup.app.globalvalues.valuefiles */}}
 
 {{/*
-Default always defined valueFiles to be included in Applications but with a prefix called $gitref
+Default always defined valueFiles to be included in Applications but with a prefix called $patternref
 */}}
 {{- define "clustergroup.app.globalvalues.prefixedvaluefiles" -}}
-- "$gitref/values-global.yaml"
-- "$gitref/values-{{ $.Values.clusterGroup.name }}.yaml"
+- "$patternref/values-global.yaml"
+- "$patternref/values-{{ $.Values.clusterGroup.name }}.yaml"
 {{- if $.Values.global.clusterPlatform }}
-- "$gitref/values-{{ $.Values.global.clusterPlatform }}.yaml"
+- "$patternref/values-{{ $.Values.global.clusterPlatform }}.yaml"
   {{- if $.Values.global.clusterVersion }}
-- "$gitref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
+- "$patternref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
   {{- end }}
-- "$gitref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
+- "$patternref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
 {{- end }}
 {{- if $.Values.global.clusterVersion }}
-- "$gitref/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
+- "$patternref/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
 {{- end }}
 {{- if $.Values.global.extraValueFiles }}
 {{- range $.Values.global.extraValueFiles }}
-- "$gitref/{{ . }}"
+- "$patternref/{{ . }}"
 {{- end }} {{/* range $.Values.global.extraValueFiles */}}
 {{- end }} {{/* if $.Values.global.extraValueFiles */}}
 {{- end }} {{/* clustergroup.app.globalvalues.prefixedvaluefiles */}}
