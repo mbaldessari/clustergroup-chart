@@ -49,20 +49,25 @@ Default always defined top-level variables for helm charts
 Default always defined valueFiles to be included in Applications
 */}}
 {{- define "clustergroup.app.globalvalues.valuefiles" -}}
-- "/values-global.yaml"
-- "/values-{{ $.Values.clusterGroup.name }}.yaml"
+{{- define "clustergroup.app.globalvalues.prefixedvaluefiles" -}}
+{{- $vd := "" -}}
+{{- if and (hasKey $.Values.global "variantDir") $.Values.global.variantDir -}}
+{{- $vd = printf "/%s" $.Values.global.variantDir -}}
+{{- end -}}
+- "{{ $vd }}/values-global.yaml"
+- "{{ $vd }}/values-{{ $.Values.clusterGroup.name }}.yaml"
 {{- if $.Values.global.clusterPlatform }}
-- "/values-{{ $.Values.global.clusterPlatform }}.yaml"
+- "{{ $vd }}/values-{{ $.Values.global.clusterPlatform }}.yaml"
   {{- if $.Values.global.clusterVersion }}
-- "/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
+- "{{ $vd }}/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
   {{- end }}
-- "/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
+- "{{ $vd }}/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
 {{- end }}
 {{- if $.Values.global.clusterVersion }}
-- "/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
+- "{{ $vd }}/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
 {{- end }}
 {{- if $.Values.global.localClusterName }}
-- "/values-{{ $.Values.global.localClusterName }}.yaml"
+- "{{ $vd }}/values-{{ $.Values.global.localClusterName }}.yaml"
 {{- end }}
 {{- if $.Values.global.extraValueFiles }}
 {{- range $.Values.global.extraValueFiles }}
