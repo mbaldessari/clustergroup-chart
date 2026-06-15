@@ -40,6 +40,8 @@ Default always defined top-level variables for helm charts
   value: {{ $.Values.global.gitOpsSubNamespace | default "" }}
 - name: global.vpArgoNamespace
   value: {{ $.Values.global.vpArgoNamespace }}
+- name: global.variantDir
+  value: {{ $.Values.global.variantDir | default "" }}
 {{- end }} {{/* clustergroup.globalvaluesparameters */}}
 
 
@@ -99,24 +101,28 @@ Default always defined valueFiles to be included in Applications
 Default always defined valueFiles to be included in Applications but with a prefix called $patternref
 */}}
 {{- define "clustergroup.app.globalvalues.prefixedvaluefiles" -}}
-- "$patternref/values-global.yaml"
-- "$patternref/values-{{ $.Values.clusterGroup.name }}.yaml"
+{{- $vd := "" -}}
+{{- if and (hasKey $.Values.global "variantDir") $.Values.global.variantDir -}}
+{{- $vd = printf "/%s" $.Values.global.variantDir -}}
+{{- end -}}
+- "$patternref{{ $vd }}/values-global.yaml"
+- "$patternref{{ $vd }}/values-{{ $.Values.clusterGroup.name }}.yaml"
 {{- if $.Values.global.clusterPlatform }}
-- "$patternref/values-{{ $.Values.global.clusterPlatform }}.yaml"
+- "$patternref{{ $vd }}/values-{{ $.Values.global.clusterPlatform }}.yaml"
   {{- if $.Values.global.clusterVersion }}
-- "$patternref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
+- "$patternref{{ $vd }}/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
   {{- end }}
-- "$patternref/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
+- "$patternref{{ $vd }}/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
 {{- end }}
 {{- if $.Values.global.clusterVersion }}
-- "$patternref/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
+- "$patternref{{ $vd }}/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
 {{- end }}
 {{- if $.Values.global.localClusterName }}
-- "$patternref/values-{{ $.Values.global.localClusterName }}.yaml"
+- "$patternref{{ $vd }}/values-{{ $.Values.global.localClusterName }}.yaml"
 {{- end }}
 {{- if $.Values.global.extraValueFiles }}
 {{- range $.Values.global.extraValueFiles }}
-- "$patternref/{{ . }}"
+- "$patternref{{ $vd }}/{{ . }}"
 {{- end }} {{/* range $.Values.global.extraValueFiles */}}
 {{- end }} {{/* if $.Values.global.extraValueFiles */}}
 {{- end }} {{/* clustergroup.app.globalvalues.prefixedvaluefiles */}}
