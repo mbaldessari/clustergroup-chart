@@ -49,7 +49,6 @@ Default always defined top-level variables for helm charts
 Default always defined valueFiles to be included in Applications
 */}}
 {{- define "clustergroup.app.globalvalues.valuefiles" -}}
-{{- define "clustergroup.app.globalvalues.prefixedvaluefiles" -}}
 {{- $vd := "" -}}
 {{- if and (hasKey $.Values.global "variantDir") $.Values.global.variantDir -}}
 {{- $vd = printf "/%s" $.Values.global.variantDir -}}
