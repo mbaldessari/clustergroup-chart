@@ -62,14 +62,20 @@
     "Main": {
       "type": "object",
       "additionalProperties": true,
-      "required": [
-        "clusterGroupName"
+      "oneOf": [
+        { "required": ["clusterGroupName"] },
+        { "required": ["variant"] }
       ],
       "title": "Main",
       "description": "This section contains the 'main' variables which are used by the install chart only and are passed to helm via the Makefile",
       "properties": {
         "clusterGroupName": {
-          "type": "string"
+          "type": "string",
+          "description": "This identifies which variant of the pattern to use (same thing as variant)"
+        },
+        "variant": {
+          "type": "string",
+          "description": "This identifies which variant of the pattern to use (same thing as clusterGroupName)"
         },
         "multiSourceRepoUrl": {
           "type": "string",
