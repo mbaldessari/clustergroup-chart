@@ -40,6 +40,8 @@ Default always defined top-level variables for helm charts
   value: {{ $.Values.global.gitOpsSubNamespace | default "" }}
 - name: global.vpArgoNamespace
   value: {{ $.Values.global.vpArgoNamespace }}
+- name: global.vpNewFolderDir
+  value: {{ $.Values.global.vpNewFolderDir | default "false" | quote }}
 {{- end }} {{/* clustergroup.globalvaluesparameters */}}
 
 
@@ -47,6 +49,23 @@ Default always defined top-level variables for helm charts
 Default always defined valueFiles to be included in Applications
 */}}
 {{- define "clustergroup.app.globalvalues.valuefiles" -}}
+{{- if $.Values.global.vpNewFolderDir }}
+- "/values-global.yaml"
+- "/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.clusterGroup.name }}.yaml"
+{{- if $.Values.global.clusterPlatform }}
+- "/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.clusterPlatform }}.yaml"
+  {{- if $.Values.global.clusterVersion }}
+- "/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
+  {{- end }}
+- "/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
+{{- end }}
+{{- if $.Values.global.clusterVersion }}
+- "/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
+{{- end }}
+{{- if $.Values.global.localClusterName }}
+- "/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.localClusterName }}.yaml"
+{{- end }}
+{{- else }}
 - "/values-global.yaml"
 - "/values-{{ $.Values.clusterGroup.name }}.yaml"
 {{- if $.Values.global.clusterPlatform }}
@@ -62,6 +81,7 @@ Default always defined valueFiles to be included in Applications
 {{- if $.Values.global.localClusterName }}
 - "/values-{{ $.Values.global.localClusterName }}.yaml"
 {{- end }}
+{{- end }} {{/* if $.Values.global.vpNewFolderDir */}}
 {{- if $.Values.global.extraValueFiles }}
 {{- range $.Values.global.extraValueFiles }}
 - {{ . | quote }}
@@ -99,6 +119,23 @@ Default always defined valueFiles to be included in Applications
 Default always defined valueFiles to be included in Applications but with a prefix called $patternref
 */}}
 {{- define "clustergroup.app.globalvalues.prefixedvaluefiles" -}}
+{{- if $.Values.global.vpNewFolderDir }}
+- "$patternref/values-global.yaml"
+- "$patternref/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.clusterGroup.name }}.yaml"
+{{- if $.Values.global.clusterPlatform }}
+- "$patternref/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.clusterPlatform }}.yaml"
+  {{- if $.Values.global.clusterVersion }}
+- "$patternref/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml"
+  {{- end }}
+- "$patternref/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml"
+{{- end }}
+{{- if $.Values.global.clusterVersion }}
+- "$patternref/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
+{{- end }}
+{{- if $.Values.global.localClusterName }}
+- "$patternref/variants/{{ $.Values.clusterGroup.name }}/values-{{ $.Values.global.localClusterName }}.yaml"
+{{- end }}
+{{- else }}
 - "$patternref/values-global.yaml"
 - "$patternref/values-{{ $.Values.clusterGroup.name }}.yaml"
 {{- if $.Values.global.clusterPlatform }}
@@ -114,6 +151,7 @@ Default always defined valueFiles to be included in Applications but with a pref
 {{- if $.Values.global.localClusterName }}
 - "$patternref/values-{{ $.Values.global.localClusterName }}.yaml"
 {{- end }}
+{{- end }} {{/* if $.Values.global.vpNewFolderDir */}}
 {{- if $.Values.global.extraValueFiles }}
 {{- range $.Values.global.extraValueFiles }}
 - "$patternref/{{ . }}"
