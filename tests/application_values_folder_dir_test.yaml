@@ -1,0 +1,211 @@
+suite: Test vpNewFolderDir valueFiles layout
+templates:
+  - templates/plumbing/applications.yaml
+release:
+  name: release-test
+tests:
+  - it: should use flat value file paths when vpNewFolderDir is not set
+    set:
+      global:
+        repoURL: https://github.com/validatedpatterns/test-pattern
+        targetRevision: main
+        pattern: test-pattern
+      clusterGroup:
+        name: hub
+        applications:
+          - name: test-app
+            namespace: test-namespace
+            path: charts/test-app
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.source.helm.valueFiles
+          value:
+            - "/values-global.yaml"
+            - "/values-hub.yaml"
+
+  - it: should use variants directory paths when vpNewFolderDir is true
+    set:
+      global:
+        repoURL: https://github.com/validatedpatterns/test-pattern
+        targetRevision: main
+        pattern: test-pattern
+        vpNewFolderDir: true
+      clusterGroup:
+        name: hub
+        applications:
+          - name: test-app
+            namespace: test-namespace
+            path: charts/test-app
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.source.helm.valueFiles
+          value:
+            - "/values-global.yaml"
+            - "/variants/hub/values-hub.yaml"
+
+  - it: should use variants directory paths with platform and version when vpNewFolderDir is true
+    set:
+      global:
+        repoURL: https://github.com/validatedpatterns/test-pattern
+        targetRevision: main
+        pattern: test-pattern
+        vpNewFolderDir: true
+        clusterPlatform: AWS
+        clusterVersion: "4.16"
+        localClusterName: mycluster
+      clusterGroup:
+        name: hub
+        applications:
+          - name: test-app
+            namespace: test-namespace
+            path: charts/test-app
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.source.helm.valueFiles
+          value:
+            - "/values-global.yaml"
+            - "/variants/hub/values-hub.yaml"
+            - "/variants/hub/values-AWS.yaml"
+            - "/variants/hub/values-AWS-4.16.yaml"
+            - "/variants/hub/values-AWS-hub.yaml"
+            - "/variants/hub/values-4.16-hub.yaml"
+            - "/variants/hub/values-mycluster.yaml"
+
+  - it: should use flat value file paths with platform and version when vpNewFolderDir is not set
+    set:
+      global:
+        repoURL: https://github.com/validatedpatterns/test-pattern
+        targetRevision: main
+        pattern: test-pattern
+        clusterPlatform: AWS
+        clusterVersion: "4.16"
+        localClusterName: mycluster
+      clusterGroup:
+        name: hub
+        applications:
+          - name: test-app
+            namespace: test-namespace
+            path: charts/test-app
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.source.helm.valueFiles
+          value:
+            - "/values-global.yaml"
+            - "/values-hub.yaml"
+            - "/values-AWS.yaml"
+            - "/values-AWS-4.16.yaml"
+            - "/values-AWS-hub.yaml"
+            - "/values-4.16-hub.yaml"
+            - "/values-mycluster.yaml"
+
+  - it: should use prefixed variants directory paths for multi-source when vpNewFolderDir is true
+    set:
+      global:
+        repoURL: https://github.com/validatedpatterns/test-pattern
+        multiSourceRepoUrl: https://charts.validatedpatterns.io
+        targetRevision: main
+        pattern: test-pattern
+        vpNewFolderDir: true
+      clusterGroup:
+        name: hub
+        applications:
+          - name: test-app
+            namespace: test-namespace
+            chart: test-chart
+            chartVersion: 0.1.*
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.sources[1].helm.valueFiles
+          value:
+            - "$patternref/values-global.yaml"
+            - "$patternref/variants/hub/values-hub.yaml"
+
+  - it: should use flat prefixed paths for multi-source when vpNewFolderDir is not set
+    set:
+      global:
+        repoURL: https://github.com/validatedpatterns/test-pattern
+        multiSourceRepoUrl: https://charts.validatedpatterns.io
+        targetRevision: main
+        pattern: test-pattern
+      clusterGroup:
+        name: hub
+        applications:
+          - name: test-app
+            namespace: test-namespace
+            chart: test-chart
+            chartVersion: 0.1.*
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.sources[1].helm.valueFiles
+          value:
+            - "$patternref/values-global.yaml"
+            - "$patternref/values-hub.yaml"
+
+  - it: should use prefixed variants directory paths with platform for multi-source when vpNewFolderDir is true
+    set:
+      global:
+        repoURL: https://github.com/validatedpatterns/test-pattern
+        multiSourceRepoUrl: https://charts.validatedpatterns.io
+        targetRevision: main
+        pattern: test-pattern
+        vpNewFolderDir: true
+        clusterPlatform: AWS
+        clusterVersion: "4.16"
+        localClusterName: mycluster
+      clusterGroup:
+        name: hub
+        applications:
+          - name: test-app
+            namespace: test-namespace
+            chart: test-chart
+            chartVersion: 0.1.*
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.sources[1].helm.valueFiles
+          value:
+            - "$patternref/values-global.yaml"
+            - "$patternref/variants/hub/values-hub.yaml"
+            - "$patternref/variants/hub/values-AWS.yaml"
+            - "$patternref/variants/hub/values-AWS-4.16.yaml"
+            - "$patternref/variants/hub/values-AWS-hub.yaml"
+            - "$patternref/variants/hub/values-4.16-hub.yaml"
+            - "$patternref/variants/hub/values-mycluster.yaml"
+
+  - it: should preserve extraValueFiles alongside variants directory paths when vpNewFolderDir is true
+    set:
+      global:
+        repoURL: https://github.com/validatedpatterns/test-pattern
+        targetRevision: main
+        pattern: test-pattern
+        vpNewFolderDir: true
+        extraValueFiles:
+          - "/extra/custom-values.yaml"
+      clusterGroup:
+        name: hub
+        applications:
+          - name: test-app
+            namespace: test-namespace
+            path: charts/test-app
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.source.helm.valueFiles
+          value:
+            - "/values-global.yaml"
+            - "/variants/hub/values-hub.yaml"
+            - "/extra/custom-values.yaml"
