@@ -14,8 +14,8 @@ metadata:
   {{- include "clustergroup.annotations" $subs.annotations | nindent 2 }}
 spec:
   name: {{ $subs.name }}
-  source: {{ default "redhat-operators" $subs.source }}
-  sourceNamespace: {{ default "openshift-marketplace" $subs.sourceNamespace }}
+  source: {{ default (default "redhat-operators" $.Values.global.catalogSource) $subs.source }}
+  sourceNamespace: {{ default (default "openshift-marketplace" $.Values.global.catalogSourceNamespace) $subs.sourceNamespace }}
   {{- if $subs.channel }}
   channel: {{ $subs.channel }}
   {{- end }} {{/* if $subs.channel */}}
@@ -65,8 +65,8 @@ metadata:
   {{- include "clustergroup.annotations" $subs.annotations | nindent 2 }}
 spec:
   name: {{ $subs.name }}
-  source: {{ default "redhat-operators" $subs.source }}
-  sourceNamespace: {{ default "openshift-marketplace" $subs.sourceNamespace }}
+  source: {{ default (default "redhat-operators" $.Values.global.catalogSource) $subs.source }}
+  sourceNamespace: {{ default (default "openshift-marketplace" $.Values.global.catalogSourceNamespace) $subs.sourceNamespace }}
   {{- if $subs.channel }}
   channel: {{ $subs.channel }}
   {{- end }}

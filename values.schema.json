@@ -200,6 +200,14 @@
         "options": {
           "$ref": "#/definitions/Options"
         },
+        "catalogSource": {
+          "type": "string",
+          "description": "Default catalog source for all OLM subscriptions. Individual subscriptions can override via their own source field."
+        },
+        "catalogSourceNamespace": {
+          "type": "string",
+          "description": "Default catalog source namespace for all OLM subscriptions. Individual subscriptions can override via their own sourceNamespace field."
+        },
         "secretStore": {
           "$ref": "#/definitions/GlobalSecretStore"
         },
