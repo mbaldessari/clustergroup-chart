@@ -102,6 +102,111 @@ tests:
           path: spec.config.env[0].value
           value: bar
         
+  - it: should use global.catalogSource as fallback when no per-subscription source is set
+    set:
+      global:
+        catalogSource: my-custom-catalog
+        catalogSourceNamespace: my-custom-namespace
+      clusterGroup:
+        subscriptions:
+          acm:
+            name: advanced-cluster-management
+            namespace: open-cluster-management
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.source
+          value: my-custom-catalog
+      - equal:
+          path: spec.sourceNamespace
+          value: my-custom-namespace
+
+  - it: should let per-subscription source override global.catalogSource
+    set:
+      global:
+        catalogSource: my-custom-catalog
+        catalogSourceNamespace: my-custom-namespace
+      clusterGroup:
+        subscriptions:
+          acm:
+            name: advanced-cluster-management
+            namespace: open-cluster-management
+            source: per-sub-catalog
+            sourceNamespace: per-sub-namespace
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.source
+          value: per-sub-catalog
+      - equal:
+          path: spec.sourceNamespace
+          value: per-sub-namespace
+
+  - it: should use global.catalogSource as fallback for namespaced subscriptions
+    set:
+      global:
+        catalogSource: my-custom-catalog
+        catalogSourceNamespace: my-custom-namespace
+      clusterGroup:
+        subscriptions:
+          acm:
+            name: advanced-cluster-management
+            namespaces:
+            - ns-one
+            - ns-two
+    asserts:
+      - hasDocuments:
+          count: 2
+      - documentSelector:
+          path: metadata.namespace
+          value: ns-one
+        equal:
+          path: spec.source
+          value: my-custom-catalog
+      - documentSelector:
+          path: metadata.namespace
+          value: ns-one
+        equal:
+          path: spec.sourceNamespace
+          value: my-custom-namespace
+      - documentSelector:
+          path: metadata.namespace
+          value: ns-two
+        equal:
+          path: spec.source
+          value: my-custom-catalog
+      - documentSelector:
+          path: metadata.namespace
+          value: ns-two
+        equal:
+          path: spec.sourceNamespace
+          value: my-custom-namespace
+
+  - it: should let per-subscription source override global.catalogSource for namespaced subscriptions
+    set:
+      global:
+        catalogSource: my-custom-catalog
+        catalogSourceNamespace: my-custom-namespace
+      clusterGroup:
+        subscriptions:
+          acm:
+            name: advanced-cluster-management
+            namespaces:
+            - ns-one
+            source: per-sub-catalog
+            sourceNamespace: per-sub-namespace
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.source
+          value: per-sub-catalog
+      - equal:
+          path: spec.sourceNamespace
+          value: per-sub-namespace
+
   - it: should output one subscription per namespace
     set:
       clusterGroup:
