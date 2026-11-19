@@ -296,8 +296,8 @@
         },
         "clusterRoleBindingSyncWave": {
           "type": "string",
-          "description": "Sync-wave annotation value for the cluster-admin ClusterRoleBinding. Defaults to -1 so it is applied before wave-0 resources",
-          "default": "-1"
+          "description": "Sync-wave annotation value for the cluster-admin ClusterRoleBinding. When set to 0 (default) no annotation is added. Set to -1 to apply before wave-0 resources",
+          "default": "0"
         }
       },
       "required": [
