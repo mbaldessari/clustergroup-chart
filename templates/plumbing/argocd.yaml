@@ -27,32 +27,17 @@ spec:
   applicationInstanceLabelKey: argocd.argoproj.io/instance
   applicationSet:
     resources:
-      limits:
-        cpu: "2"
-        memory: 1Gi
-      requests:
-        cpu: 250m
-        memory: 512Mi
+{{ toYaml $.Values.clusterGroup.argoCD.resources.applicationSet | indent 6 }}
   controller:
     processors: {}
     resources:
-      limits:
-        cpu: "4"
-        memory: 4Gi
-      requests:
-        cpu: 500m
-        memory: 2Gi
+{{ toYaml $.Values.clusterGroup.argoCD.resources.controller | indent 6 }}
   sso:
     provider: dex
     dex:
       openShiftOAuth: true
       resources:
-        limits:
-          cpu: 500m
-          memory: 256Mi
-        requests:
-          cpu: 250m
-          memory: 128Mi
+{{ toYaml $.Values.clusterGroup.argoCD.resources.dex | indent 8 }}
   initialSSHKnownHosts: {}
   rbac:
   {{- if $.Values.clusterGroup.argoCD.rbac }}
@@ -88,12 +73,7 @@ spec:
 {{ toYaml $.Values.clusterGroup.argoCD.initContainers | indent 4 }}
 {{- end }}
     resources:
-      limits:
-        cpu: "1"
-        memory: 1Gi
-      requests:
-        cpu: 250m
-        memory: 256Mi
+{{ toYaml $.Values.clusterGroup.argoCD.resources.repo | indent 6 }}
     volumeMounts:
     - mountPath: /etc/pki/tls/certs
       name: ca-bundles
@@ -176,12 +156,7 @@ spec:
     ingress:
       enabled: false
     resources:
-      limits:
-        cpu: 500m
-        memory: 256Mi
-      requests:
-        cpu: 125m
-        memory: 128Mi
+{{ toYaml $.Values.clusterGroup.argoCD.resources.server | indent 6 }}
     route:
       enabled: true
       tls:

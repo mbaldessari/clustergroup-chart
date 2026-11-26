@@ -747,6 +747,62 @@
           "type": "object",
           "description": "Rbac customizes ArgoCD RBAC policies.",
           "additionalProperties": true
+        },
+        "resources": {
+          "$ref": "#/definitions/ArgoCDResources"
+        }
+      }
+    },
+    "ArgoCDResources": {
+      "type": "object",
+      "description": "Resource requests and limits for ArgoCD components.",
+      "additionalProperties": false,
+      "properties": {
+        "server": {
+          "$ref": "#/definitions/ResourceRequirements"
+        },
+        "controller": {
+          "$ref": "#/definitions/ResourceRequirements"
+        },
+        "applicationSet": {
+          "$ref": "#/definitions/ResourceRequirements"
+        },
+        "repo": {
+          "$ref": "#/definitions/ResourceRequirements"
+        },
+        "dex": {
+          "$ref": "#/definitions/ResourceRequirements"
+        }
+      }
+    },
+    "ResourceRequirements": {
+      "type": "object",
+      "description": "Kubernetes resource requests and limits.",
+      "additionalProperties": false,
+      "properties": {
+        "limits": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "cpu": {
+              "type": "string"
+            },
+            "memory": {
+              "type": "string"
+            }
+          }
+        },
+        "requests": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "cpu": {
+              "type": "string"
+            },
+            "memory": {
+              "type": "string"
+            }
+          }
         }
       }
     },
